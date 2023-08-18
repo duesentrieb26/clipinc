@@ -23,6 +23,9 @@ chrome.runtime.onMessage.addListener(
                     }
                 );
                 break;
+            default:
+                console.error('command ' + command + ' not yet registered');
+                break;
         }
 
         return true;
@@ -46,9 +49,10 @@ const startCapture = () =>
                                 {
                                     type: 'basic',
                                     title: chrome.i18n.getMessage('name'),
-                                    message: chrome.i18n.getMessage(
-                                        'errorChangeDevice'
-                                    ),
+                                    message:
+                                        chrome.i18n.getMessage(
+                                            'errorChangeDevice'
+                                        ),
                                     iconUrl: 'assets/images/clipinc-128.png',
                                 },
                                 console.debug.bind(console)
@@ -71,9 +75,8 @@ const startCapture = () =>
                             }
 
                             const audioCtx = new AudioContext();
-                            const source = audioCtx.createMediaStreamSource(
-                                stream
-                            );
+                            const source =
+                                audioCtx.createMediaStreamSource(stream);
 
                             const mediaRecorder = new Recorder(source);
                             mediaRecorder.onComplete = download;
@@ -111,9 +114,10 @@ const startCapture = () =>
                                     {
                                         type: 'basic',
                                         title: chrome.i18n.getMessage('name'),
-                                        message: chrome.i18n.getMessage(
-                                            'notificationStop'
-                                        ),
+                                        message:
+                                            chrome.i18n.getMessage(
+                                                'notificationStop'
+                                            ),
                                         iconUrl:
                                             'assets/images/clipinc-128.png',
                                     },
@@ -159,6 +163,14 @@ const startCapture = () =>
                                     case 'spotifyPause':
                                     case 'stopCapture':
                                         stopRecording();
+                                        break;
+
+                                    default:
+                                        console.error(
+                                            'command ' +
+                                                command +
+                                                ' not yet registered'
+                                        );
                                         break;
                                 }
                             };
@@ -226,7 +238,7 @@ function resetStorage() {
         isRecording: false,
         tabId: 0,
         track: null,
-        soungCount: 0,
+        songCount: 0,
     });
 }
 

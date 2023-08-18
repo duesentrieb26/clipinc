@@ -119,6 +119,13 @@ function finish(track) {
             writer.setFrame('TRCK', track.trackNumber);
         }
 
+        if (track.spotifyId) {
+            writer.setFrame('TXXX', {
+                description: 'SPOTIFY_ID',
+                value: track.spotifyId,
+            });
+        }
+
         writer.addTag();
 
         console.debug('done');
@@ -153,5 +160,8 @@ self.onmessage = function (event) {
             break;
         case 'cancel':
             cleanup();
+            break;
+        default:
+            error(`Unknown command: ${data.command}`);
     }
 };

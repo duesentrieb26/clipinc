@@ -166,6 +166,9 @@ const getTrackInfo = () =>
                                         ? directoryName
                                         : undefined,
                                 progress: t.progress_ms,
+                                spotifyId: track.id,
+                                genres: track.album.genres,
+                                popularity: track.popularity,
                                 startTime: new Date(),
                             });
                         })
@@ -288,7 +291,10 @@ function hijackVolumeControl() {
     volumeBar.appendChild(input);
     volumeBar.classList.add('volume-bar', 'volume-bar--hijacked');
 
-    const volumeBarElement = document.querySelector('.volume-bar');
+    // const volumeBarElement = document.querySelector('.volume-bar');
+    const volumeBarElement = document.querySelector(
+        'div[data-testid="volume-bar"]'
+    );
 
     volumeBarElement.parentNode.appendChild(volumeBar);
     volumeBarElement.style.display = 'none';
@@ -302,7 +308,10 @@ function releaseVolumeControl() {
         volumeBar.parentNode.removeChild(volumeBar);
     }
 
-    const regularVolumeBar = document.querySelector('.volume-bar');
+    // const regularVolumeBar = document.querySelector('.volume-bar');
+    const regularVolumeBar = document.querySelector(
+        'div[data-testid="volume-bar"]'
+    );
 
     regularVolumeBar.style.display = '';
 }
@@ -344,6 +353,9 @@ chrome.runtime.onMessage.addListener(
             case 'stopRecording':
                 releaseVolumeControl();
                 setVolume(data.volume);
+                break;
+            default:
+                console.log('unknown command', command);
                 break;
         }
     }

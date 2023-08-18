@@ -7,7 +7,8 @@ export class Recorder {
     constructor(source) {
         this.context = source.context;
         if (this.context.createScriptProcessor == null) {
-            this.context.createScriptProcessor = this.context.createJavaScriptNode;
+            this.context.createScriptProcessor =
+                this.context.createJavaScriptNode;
         }
 
         this.input = this.context.createGain();
@@ -88,6 +89,8 @@ export class Recorder {
                 case 'error':
                     this.onError(this, data.message);
                     break;
+                default:
+                    console.error(`Unknown command: ${data.command}`);
             }
         };
 
