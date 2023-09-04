@@ -256,7 +256,9 @@ function getIsLocalDevice() {
 
 // get current volume from dom
 function getVolume() {
-    const v = JSON.parse(localStorage.getItem('playback')).volume;
+    const v = JSON.parse(
+        localStorage.getItem('playback') || '{"volume":1}'
+    ).volume;
     return Math.max(0, Math.min(1, v * v * v));
 }
 
@@ -281,9 +283,9 @@ function hijackVolumeControl() {
     input.min = 0;
     input.max = 1;
     input.step = 0.01;
-    input.value = JSON.parse(localStorage.getItem('playback')).volume.toFixed(
-        2
-    );
+    input.value = JSON.parse(
+        localStorage.getItem('playback') || '{"volume":1}'
+    ).volume.toFixed(2);
     input.classList.add('slider');
     input.addEventListener('input', handlePlayerVolumeInput);
 
@@ -291,13 +293,16 @@ function hijackVolumeControl() {
     volumeBar.appendChild(input);
     volumeBar.classList.add('volume-bar', 'volume-bar--hijacked');
 
-    // const volumeBarElement = document.querySelector('.volume-bar');
     const volumeBarElement = document.querySelector(
-        'div[data-testid="volume-bar"]'
+        '.control-button[aria-describedby="volume-icon"]'
     );
 
-    volumeBarElement.parentNode.appendChild(volumeBar);
-    volumeBarElement.style.display = 'none';
+    if (volumeBarElement) {
+        volumeBarElement.parentNode.appendChild(volumeBar);
+        volumeBarElement.style.display = 'none';
+    } else {
+        console.error('could not hijack volume control');
+    }
 }
 
 // remove custom volume control and show old one again
@@ -308,9 +313,8 @@ function releaseVolumeControl() {
         volumeBar.parentNode.removeChild(volumeBar);
     }
 
-    // const regularVolumeBar = document.querySelector('.volume-bar');
     const regularVolumeBar = document.querySelector(
-        'div[data-testid="volume-bar"]'
+        '.control-button[aria-describedby="volume-icon"]'
     );
 
     regularVolumeBar.style.display = '';
